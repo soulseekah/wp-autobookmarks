@@ -39,6 +39,7 @@ add_action( 'admin_head', function() {
 	/** Regular expressions for HTML parsing? Don't kill me :) */
 	preg_match( '#<title>(.*)</title>#', $header, $matches );
 	$title = count( $matches ) > 1 ? $matches[1] : '';
+	/** Cleanup automated title */
 	$title = trim( str_replace( array( get_bloginfo( 'name' ), ' &#8212; ' . __( 'WordPress' ) ), '', $title ) );
 
 	/** Tack on edited custom post types, users */
@@ -47,6 +48,10 @@ add_action( 'admin_head', function() {
 	} else if ( get_current_screen()->base == 'user-edit' && isset( $_GET['user_id'] ) ) {
 		$title = $title . ' ' . get_user_by( 'id', $_GET['user_id'] )->display_name;
 	}
+
+	/** Clean any stray arrows */
+	$title = preg_replace( '# &lsaquo;$#', '', $title );
+	$title = preg_replace( '#^&lsaquo; #', '', $title );
 
 	$autobookmarks = get_user_meta( $user_id, 'autobookmarks', true ) ? : array();
 	$autobookmarks[$screen] = empty( $autobookmarks[$screen] ) ? array( 'title' => $title, 'count' => 0 ) : $autobookmarks[$screen];
