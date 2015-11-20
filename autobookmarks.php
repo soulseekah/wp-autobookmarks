@@ -32,7 +32,7 @@ add_action( 'admin_head', function() {
 
 	$user_id = wp_get_current_user()->ID;
 
-	$blacklist = array( '_wpnonce', 'wp_http_referer' );
+	$blacklist = array( '_wpnonce', 'wp_http_referer', 'paged', 's' );
 	$screen = remove_query_arg( $blacklist );
 
 
