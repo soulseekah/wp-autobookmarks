@@ -62,7 +62,7 @@ add_action( 'admin_bar_menu', function( $admin_bar ) {
 
 	$admin_bar->add_node( array(
 		'id' => 'autobookmarks',
-		'title' => 'Autobookmarks',
+		'title' => sprintf( '<span class="ab-icon dashicons dashicons-book"></span><span class="ab-label">%s</span>', 'Autobookmarks' ),
 		'parent' => false,
 	) );
 
@@ -81,4 +81,4 @@ add_action( 'admin_bar_menu', function( $admin_bar ) {
 			'parent' => 'autobookmarks',
 		) );
 	}
-} );
+}, 100 );
