@@ -38,7 +38,15 @@ add_action( 'admin_head', function() {
 
 	/** Regular expressions for HTML parsing? Don't kill me :) */
 	preg_match( '#<title>(.*)</title>#', $header, $matches );
-	$title = count( $matches ) > 1 ? $matches[1] : $screen;
+	$title = count( $matches ) > 1 ? $matches[1] : '';
+	$title = trim( str_replace( array( get_bloginfo( 'name' ), ' &#8212; ' . __( 'WordPress' ) ), '', $title ) );
+
+	/** Tack on edited custom post types, users */
+	if ( get_current_screen()->base == 'post' && isset( $_GET['post'] ) ) {
+		$title = $title . ' ' . get_post( $_GET['post'] )->post_title;
+	} else if ( get_current_screen()->base == 'user-edit' && isset( $_GET['user_id'] ) ) {
+		$title = $title . ' ' . get_user_by( 'id', $_GET['user_id'] )->display_name;
+	}
 
 	$autobookmarks = get_user_meta( $user_id, 'autobookmarks', true ) ? : array();
 	$autobookmarks[$screen] = empty( $autobookmarks[$screen] ) ? array( 'title' => $title, 'count' => 0 ) : $autobookmarks[$screen];
@@ -65,7 +73,7 @@ add_action( 'admin_bar_menu', function( $admin_bar ) {
 		return $b['count'] - $a['count'];
 	} );
 
-	foreach ( $autobookmarks as $href => $bookmark ) {
+	foreach ( array_slice( $autobookmarks, 0, 10 ) as $href => $bookmark ) {
 		$admin_bar->add_node( array(
 			'id' => $href,
 			'href' => $href,
